@@ -152,3 +152,10 @@ export default App;
 - useImperativeHandle()는 이름 처럼 Imperative(명령형) 동작에 대한 Handler를 제공한다.
 
 출처: https://medium.com/react-native-seoul/react-%EB%A6%AC%EC%95%A1%ED%8A%B8%EB%A5%BC-%EC%B2%98%EC%9D%8C%EB%B6%80%ED%84%B0-%EB%B0%B0%EC%9B%8C%EB%B3%B4%EC%9E%90-07-createref%EC%99%80-useref-%EA%B7%B8%EB%A6%AC%EA%B3%A0-useimperativehandle-2fb5445d168b
+
+정리
+
+- 컴포넌트 내부에서 DOM에 직접 접근해야 할 때는 ref를 사용
+- 서로 다른 컴포넌트끼리 데이터를 교류할 때 ref를 사용한다면 이는 잘못 사용된 것. -> 수정한 코드를 보면 책처럼 부모에서 자식컴포넌트의 메소드에 접근하려고 forwardRef와 useImperativeHanlde을 사용하여 전달하였는데 리액트 사상에 어긋난 설계
+  -> 앱 규모가 커지면 마치 스파게티처럼 구조가 꼬여 버려서 유지보수가 불가능
+  -> redux or Context API를 사용하는 것이 효율적
