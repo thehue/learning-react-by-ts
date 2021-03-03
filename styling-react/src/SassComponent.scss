@@ -1,7 +1,9 @@
-@import './styles/utils.scss';
-
 .SassComponent {
   display: flex;
+  background: $oc-gray-2;
+  @include media('<768px') {
+    background: $oc-gray-9;
+  }
   .box {
     background: red;
     cursor: pointer;
@@ -27,7 +29,7 @@
       @include square(5);
     }
     &.indigo {
-      background: $indigo;
+      background: $violet;
       @include square(6);
     }
     &.violet {
