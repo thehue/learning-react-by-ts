@@ -29,7 +29,7 @@
       @include square(5);
     }
     &.indigo {
-      background: $violet;
+      background: $indigo;
       @include square(6);
     }
     &.violet {

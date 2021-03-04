@@ -159,3 +159,103 @@ export default App;
 - 서로 다른 컴포넌트끼리 데이터를 교류할 때 ref를 사용한다면 이는 잘못 사용된 것. -> 수정한 코드를 보면 책처럼 부모에서 자식컴포넌트의 메소드에 접근하려고 forwardRef와 useImperativeHanlde을 사용하여 전달하였는데 리액트 사상에 어긋난 설계
   -> 앱 규모가 커지면 마치 스파게티처럼 구조가 꼬여 버려서 유지보수가 불가능
   -> redux or Context API를 사용하는 것이 효율적
+
+## 9.4 styled-components
+
+### typescript media-templates
+
+src/StyledComponent.tsx
+
+```
+import React from 'react';
+import styled, { css } from 'styled-components';
+
+type StyledProps = {
+  inverted?: boolean;
+};
+
+/*
+
+const sizes = {
+  desktop: 1024,
+  tablet: 768,
+};
+
+const media = Object.keys(sizes).reduce((acc, label) => {
+  acc[label] = (...args) => css`
+   @media (max-width: ${sizes[label]/16}em){
+     ${css(...args)};
+   }
+  `;
+
+  return acc;
+}, {});
+*/
+
+const customMediaQuery = (maxWidth: number) =>
+  `@media (max-width: ${maxWidth / 16}em)`;
+
+const media = {
+  desktop: customMediaQuery(1024),
+  tablet: customMediaQuery(768),
+};
+
+const Box = styled.div`
+  background: ${(props) => props.color || 'blue'};
+  padding: 1rem;
+  display: flex;
+  width: 1024px;
+  margin: 0 auto;
+  ${media.desktop} {
+    width: 768px;
+  }
+  ${media.tablet} {
+    width: 100%;
+  }
+`;
+
+const Button = styled.button`
+  background: white;
+  color: black;
+  border-radius: 4px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  font-size: 1rem;
+  font-weight: 600;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  ${(props: StyledProps) =>
+    props.inverted &&
+    css`
+      background: none;
+      border: 2px solid white;
+      color: white;
+      &:hover {
+        background: white;
+        color: black;
+      }
+    `};
+
+  & + button {
+    margin-left: 1rem;
+  }
+`;
+
+function StyledComponent() {
+  return (
+    <Box color="black">
+      <Button>안녕하세요</Button>
+      <Button inverted={true}>테두리만</Button>
+    </Box>
+  );
+}
+
+export default StyledComponent;
+
+```
