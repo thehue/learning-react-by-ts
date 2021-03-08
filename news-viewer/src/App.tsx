@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
 import axios from 'axios';
+import React, { useState } from 'react';
 
 function App() {
   const [data, setData] = useState(null);
   const onClick = async () => {
     try {
       const response = await axios.get(
-        'https://jsonplaceholder.typicode.com/todos/1',
+        'https://newsapi.org/v2/top-headlines?country=kr&category=entertainment&apiKey=8e4096e36aaa489fb92d6179b4f6e9c2',
       );
 
       setData(response.data);
