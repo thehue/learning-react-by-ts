@@ -1,21 +1,26 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from 'react';
+import produce from 'immer';
 
 type Form = {
-  id?: number;
-  name?: string;
-  username?: string;
+  [key: string]: string;
+};
+
+type Info = {
+  id: number;
+  name: string;
+  username: string;
 };
 
 type Data = {
-  array: Form[];
+  array: Info[];
   uselessValue: any;
 };
 
 function App() {
   const nextId = useRef(1);
-  const [form, setForm] = useState({
-    name: "",
-    username: "",
+  const [form, setForm] = useState<Form>({
+    name: '',
+    username: '',
   });
   const [data, setData] = useState<Data>({
     array: [],
@@ -24,43 +29,59 @@ function App() {
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm((form) => ({
-      ...form,
-      [name]: [value],
-    }));
+
+    setForm(
+      produce((draft) => {
+        draft[name] = value;
+      })
+    );
   }, []);
 
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const info: Form = {
+
+      const info: Info = {
         id: nextId.current,
         name: form.name,
         username: form.username,
       };
 
-      setData((data) => ({
-        ...data,
-        array: data.array.concat(info),
-      }));
+      setData(
+        produce((draft) => {
+          draft.array.push(info);
+        })
+      );
 
       // form 초기화
       setForm({
-        name: "",
-        username: "",
+        name: '',
+        username: '',
       });
 
       nextId.current += 1;
     },
-    [form]
+    [form.name, form.username]
   );
 
-  const onRemove = useCallback((id: number) => {
-    setData((data) => ({
-      ...data,
-      array: data.array.filter((info) => info.id !== id),
-    }));
-  }, []);
+  const onRemove = useCallback(
+    (id: number) => {
+      setData((data) => ({
+        ...data,
+        array: data.array.filter((info) => info.id !== id),
+      }));
+
+      const nextState = produce(data, (draft) => {
+        draft.array.splice(
+          draft.array.findIndex((t) => t.id === id),
+          1
+        );
+      });
+
+      setData(nextState);
+    },
+    [data]
+  );
 
   return (
     <div>
